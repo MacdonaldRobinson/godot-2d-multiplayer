@@ -6,7 +6,7 @@
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_run_anim_strip_6.png" type="Texture" id=4]
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_death_anim_strip_8.png" type="Texture" id=5]
 
-[sub_resource type="GDScript" id=1]
+[sub_resource type="GDScript" id=28]
 script/source = "extends Node2D
 
 onready var player:KinematicBody2D = $\".\";
@@ -76,16 +76,19 @@ func _physics_process(delta):
 		rpc(\"add_fireball_to_world\", player.global_position.x, player.global_position.y, player_animations.flip_h)
 		
 func death_animation_finished(body):
-	print(\"death_animation_finished\")
+	#print(\"death_animation_finished\", body.name)
 	rpc(\"remove_player_from_world\", int(body.name))	
+	body.queue_free()
 
 func fireball_body_entered(body):
+	#print(\"fireball_body_entered\", body)
 	if body != self:
 		if body.is_in_group(\"player\"):
 			for child in body.get_children():
 				if child is AnimatedSprite:				
 					child.play(\"death\")
-					child.connect(\"animation_finished\", self, \"death_animation_finished\", [body])
+					if !child.is_connected(\"animation_finished\", self, \"death_animation_finished\"):
+						child.connect(\"animation_finished\", self, \"death_animation_finished\", [body])
 
 remotesync func add_fireball_to_world(position_x, position_y, flip_h):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -94,10 +97,11 @@ remotesync func add_fireball_to_world(position_x, position_y, flip_h):
 	var fireball = fireball_scene.instance()
 	var fireball_animations = fireball.get_node(\"AnimatedSprite\");
 
-	fireball.connect(\"body_entered\", self, \"fireball_body_entered\")
+	if !fireball.is_connected(\"body_entered\", self, \"fireball_body_entered\"):
+		fireball.connect(\"body_entered\", self, \"fireball_body_entered\")
 	
-	fireball.global_position.x = position_x
-	fireball.global_position.y = position_y
+	fireball.position.x = position_x
+	fireball.position.y = position_y
 	fireball_animations.flip_h = flip_h
 	fireballs.push_front(fireball)
 	
@@ -261,7 +265,7 @@ extents = Vector2( 6.43067, 7.65998 )
 [node name="Player" type="KinematicBody2D" groups=[
 "player",
 ]]
-script = SubResource( 1 )
+script = SubResource( 28 )
 
 [node name="Name" type="Label" parent="."]
 margin_left = -32.0115
@@ -278,7 +282,7 @@ __meta__ = {
 [node name="Animations" type="AnimatedSprite" parent="."]
 frames = SubResource( 18 )
 animation = "death"
-frame = 6
+frame = 5
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
