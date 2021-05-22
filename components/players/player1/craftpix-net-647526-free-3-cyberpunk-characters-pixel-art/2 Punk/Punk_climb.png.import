@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Punk_climb.png-c2182d134ac41a9245d0319fe1da86a1.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://components/players/player1/craftpix-net-647526-free-3-cyberpunk-characters-pixel-art/2 Punk/Punk_climb.png"
+dest_files=[ "res://.import/Punk_climb.png-c2182d134ac41a9245d0319fe1da86a1.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

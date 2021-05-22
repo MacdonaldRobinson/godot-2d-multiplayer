@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/Biker_death.png-4295a50c26ed86e09a71acc86bbd8b71.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://components/players/player1/craftpix-net-647526-free-3-cyberpunk-characters-pixel-art/1 Biker/Biker_death.png"
+dest_files=[ "res://.import/Biker_death.png-4295a50c26ed86e09a71acc86bbd8b71.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

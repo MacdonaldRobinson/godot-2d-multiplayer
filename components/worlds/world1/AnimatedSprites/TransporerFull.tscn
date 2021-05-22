@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/4 Animated objects/Transporter.png" type="Texture" id=1]
+
+[sub_resource type="AtlasTexture" id=70]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 96, 32 )
+
+[sub_resource type="AtlasTexture" id=71]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 96, 0, 96, 32 )
+
+[sub_resource type="AtlasTexture" id=72]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 192, 0, 96, 32 )
+
+[sub_resource type="AtlasTexture" id=73]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 288, 0, 96, 32 )
+
+[sub_resource type="SpriteFrames" id=74]
+animations = [ {
+"frames": [ SubResource( 70 ), SubResource( 71 ), SubResource( 72 ), SubResource( 73 ) ],
+"loop": true,
+"name": "start",
+"speed": 5.0
+} ]
+
+[node name="TransporerFull" type="AnimatedSprite"]
+frames = SubResource( 74 )
+animation = "start"
+frame = 1
+playing = true

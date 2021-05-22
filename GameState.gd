@@ -10,7 +10,7 @@ sync var players:Dictionary = {}
 
 var self_data = { name="", position=Vector2(0, 0), flip_h=false, player_animation="idle"}
 
-var world = preload("res://World.tscn").instance();
+var world = preload("res://components/worlds/world1/World1.tscn").instance();
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "network_peer_connected")
@@ -104,7 +104,7 @@ remotesync func add_player_to_world(player_data):
 		return	
 		
 	if !players_scene.has_node(str(id)):
-		var player_scene = preload("res://Player.tscn").instance()
+		var player_scene = preload("res://components/players/player1/Player.tscn").instance()
 		var player_sprite = player_scene.get_node("Animations");
 		var player_name = player_scene.get_node("Name");
 		

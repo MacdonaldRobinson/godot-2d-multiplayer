@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/IndustrialTile_14.png-4efa64889e4a96d9d630302eac3655eb.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/1 Tiles/IndustrialTile_14.png"
+dest_files=[ "res://.import/IndustrialTile_14.png-4efa64889e4a96d9d630302eac3655eb.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0
