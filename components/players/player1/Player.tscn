@@ -23,54 +23,61 @@ func _ready():
 	player_animations.play(\"idle\")	
 	
 func _physics_process(delta):	
-	if is_network_master():		
-		player_velocity.y += 10;
-
-		if !player.is_on_floor() and !player.is_on_wall():
-			if player_velocity.y < 0:
-				player_animations.play(\"jump\")	
-			elif player_velocity.y > 0:
-				player_animations.play(\"fall\")
-			
-		if Input.is_action_pressed(\"ui_left\"):		
-			player_animations.flip_h = true
-			player_velocity.x -= 5		
-			player_animations.play(\"run\")
-		elif Input.is_action_pressed(\"ui_right\"):		
-			player_animations.flip_h = false
-			player_velocity.x += 5
-			player_animations.play(\"run\")
-		else:
-			player_velocity.x = lerp(player_velocity.x, 0, 0.1)
-			if player.is_on_floor():
-				player_animations.play(\"idle\")
+	if !is_network_master():		
+		return
 		
-		if player.is_on_floor() and Input.is_action_pressed(\"ui_up\"):		
+	player_velocity.y += 10;
+
+	if !player.is_on_floor() and !player.is_on_wall():
+		if player_velocity.y < 0:
+			player_animations.play(\"jump\")	
+		elif player_velocity.y > 0:
+			player_animations.play(\"fall\")
+		
+	if Input.is_action_pressed(\"ui_left\"):		
+		player_animations.flip_h = true
+		player_velocity.x -= 5		
+		player_animations.play(\"run\")
+	elif Input.is_action_pressed(\"ui_right\"):		
+		player_animations.flip_h = false
+		player_velocity.x += 5
+		player_animations.play(\"run\")
+	else:
+		player_velocity.x = lerp(player_velocity.x, 0, 0.1)
+		if player.is_on_floor():
+			player_animations.play(\"idle\")
+	
+	if player.is_on_floor() and Input.is_action_pressed(\"ui_up\"):		
+		player_velocity.y -= 250
+		player_animations.play(\"jump\")
+	elif !player.is_on_floor() and Input.is_action_pressed(\"ui_down\"):
+		player_velocity.y += 50
+		player_animations.play(\"fall\")
+		
+	if player.is_on_wall() or player.is_on_ceiling():
+		player_velocity.y = 0
+		if Input.is_action_pressed(\"ui_up\"):
 			player_velocity.y -= 250
 			player_animations.play(\"jump\")
-		elif !player.is_on_floor() and Input.is_action_pressed(\"ui_down\"):
-			player_velocity.y += 50
-			player_animations.play(\"fall\")
+		elif Input.is_action_pressed(\"ui_down\"):
+			player_velocity.y += 250
+			player_animations.play(\"jump\")
 			
-		if player.is_on_wall() or player.is_on_ceiling():
-			player_velocity.y = 0
-			if Input.is_action_pressed(\"ui_up\"):
-				player_velocity.y -= 250
-				player_animations.play(\"jump\")
-			elif Input.is_action_pressed(\"ui_down\"):
-				player_velocity.y += 250
-				player_animations.play(\"jump\")
-				
-		player_velocity = player.move_and_slide(player_velocity, Vector2.UP);	
-		GameState.self_data.position = player.position
-		GameState.self_data.flip_h = player_animations.flip_h;
-		GameState.self_data.animation = player_animations.animation
+	player_velocity = player.move_and_slide(player_velocity, Vector2.UP);	
+	
+	#if player.position != GameState.self_data.position:		
+	GameState.self_data.position = player.position
+	GameState.self_data.flip_h = player_animations.flip_h;
+	GameState.self_data.animation = player_animations.animation
+	
+	#rpc(\"update_player_data\", GameState.self_data)
 
-		if Input.is_action_just_pressed(\"fire\"):						
-			rpc(\"add_fireball_to_world\", player.global_position.x, player.global_position.y, player_animations.flip_h)
+	if Input.is_action_just_pressed(\"fire\"):						
+		rpc(\"add_fireball_to_world\", player.global_position.x, player.global_position.y, player_animations.flip_h)
 		
-func death_animation_finished(body):	
-	GameState.remove_player(int(body.name))
+func death_animation_finished(body):
+	print(\"death_animation_finished\")
+	rpc(\"remove_player_from_world\", int(body.name))	
 
 func fireball_body_entered(body):
 	if body != self:
@@ -271,7 +278,7 @@ __meta__ = {
 [node name="Animations" type="AnimatedSprite" parent="."]
 frames = SubResource( 18 )
 animation = "death"
-frame = 4
+frame = 6
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -68,12 +68,9 @@ func network_peer_connected(id):
 	print("network_peer_connected: ", id)	
 
 func network_peer_disconnected(id):
-	remove_player(id)
+	rpc("remove_player_from_world", id)
 	print("network_peer_disconnected: ", id)		
 
-func remove_player(id:int):	
-	rpc("remove_player_from_world", id)
-	
 func _process(delta):	
 	var id = get_tree().get_rpc_sender_id()
 	
@@ -90,13 +87,15 @@ func _process(delta):
 		if !players.has(player_id):
 			players_scene.remove_child(player_scene)
 			
-	for player in players:
-		if id != get_tree().get_network_unique_id():
-			rpc("add_player_to_world", self_data);	
-			
 	if get_tree().network_peer != null and get_tree().is_network_server():
 		rset("players", players)		
 	
+	print(players.keys())
+	
+	for player in players:		
+		rpc("add_player_to_world", self_data);
+		rpc("update_player_data", self_data)
+
 	handle_fireballs()
 
 func get_nodes_in_player_group(player_id):
@@ -109,6 +108,7 @@ func add_to_player_group(player_id, node):
 	node.add_to_group(get_player_group_name(player_id))
 
 remotesync func remove_player_from_world(id):
+			
 	print("Ran remove_player_from_world", id)
 	players.erase(id)	
 	
@@ -120,13 +120,38 @@ remotesync func remove_player_from_world(id):
 	if players_scene.has_node(str(id)):
 		var player_scene = players_scene.get_node(str(id))
 		player_scene.queue_free()
-	
-remotesync func add_player_to_world(player_data):	
+
+remotesync func update_player_data(player_data):
 	var id = get_tree().get_rpc_sender_id()
 	
+	if !players.has(id):
+		return
+			
 	players[id]	= player_data
 	
 	var players_scene = world.get_node("Players");
+	
+	if players_scene == null:
+		return		
+	
+	if players_scene.has_node(str(id)):
+		var player_scene = players_scene.get_node(str(id))
+		
+		if player_scene != null:
+			var player_sprite = player_scene.get_node("Animations");
+			
+			player_scene.position = player_data.position
+			player_sprite.flip_h = player_data.flip_h
+			player_sprite.animation = player_data.player_animation
+	
+remotesync func add_player_to_world(player_data):	
+	var id = get_tree().get_rpc_sender_id()
+	var players_scene = world.get_node("Players");	
+	
+	if players.has(id) and players_scene.has_node(str(id)):
+		return
+	
+	players[id]	= player_data
 	
 	if players_scene == null:
 		return	
@@ -143,16 +168,6 @@ remotesync func add_player_to_world(player_data):
 		player_scene.set_network_master(id)
 		
 		world.get_node("Players").add_child(player_scene)
-		
-	else:
-		var player_scene = players_scene.get_node(str(id))
-		var player_sprite = player_scene.get_node("Animations");
-		
-		player_scene.position = player_data.position
-		player_sprite.flip_h = player_data.flip_h
-		player_sprite.animation = player_data.player_animation	
-			
-		print("add_player_to_world ", id)
 
 
 func handle_fireballs():
