@@ -8,10 +8,11 @@ var network = NetworkedMultiplayerENet.new()
 
 sync var players:Dictionary = {}
 
-var self_data = {is_dead=false, name="", position=Vector2(0, 0), flip_h=false, player_animation="idle", fireballs=[]}
+var self_data = {name="", position=Vector2(0, 0), flip_h=false, animation="idle", health=100, score=0}
 
 var world = preload("res://components/worlds/world1/World1.tscn").instance();
 var player_scene_preload = preload("res://components/players/player1/Player.tscn");
+var fireball_scene = preload("res://components/players/player1/Fireball.tscn")
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "network_peer_connected")
@@ -71,28 +72,24 @@ func network_peer_disconnected(id):
 	rpc("remove_player_from_world", id)
 	print("network_peer_disconnected: ", id)		
 
-func _process(delta):	
+func _process(delta):		
 	var id = get_tree().get_rpc_sender_id()
 	
 	var players_scene = world.get_node("Players");
 	
+	
 	if players_scene == null:
 		return	
 		
-	for player_scene in players_scene.get_children():			
-		var player_id = int(player_scene.name);		
-		if !players.has(player_id):
-			players_scene.remove_child(player_scene)#		
+#	for player_scene in players_scene.get_children():			
+#		var player_id = int(player_scene.name);		
+#		if !players.has(player_id):
+#			remove_player_from_world(player_id)
 			
-		if !players.has(player_id):
-			players_scene.remove_child(player_scene)
-			
-	if get_tree().network_peer != null and get_tree().is_network_server():		
-		rset("players", players)		
-	
-	#print(players.keys())
-	
-	for player in players:				
+	#if get_tree().network_peer != null and get_tree().is_network_server():		
+		#rset("players", players)		
+		
+	for player in players:		
 		rpc("add_player_to_world", self_data);
 		rpc("update_player_data", self_data)
 
@@ -109,7 +106,7 @@ func add_to_player_group(player_id, node):
 
 remotesync func remove_player_from_world(id):
 			
-	print("Ran remove_player_from_world", id)
+	print("remove_player_from_world: ",id, " | current", players.keys())
 	players.erase(id)	
 	
 	var players_scene = world.get_node("Players");
@@ -120,6 +117,9 @@ remotesync func remove_player_from_world(id):
 	if players_scene.has_node(str(id)):
 		var player_scene = players_scene.get_node(str(id))
 		player_scene.queue_free()
+		
+	print("done remove_player_from_world: ",id, " | current", players.keys())
+
 
 remotesync func update_player_data(player_data):
 	var id = get_tree().get_rpc_sender_id()
@@ -142,7 +142,9 @@ remotesync func update_player_data(player_data):
 			
 			player_scene.position = player_data.position
 			player_sprite.flip_h = player_data.flip_h
-			player_sprite.animation = player_data.player_animation
+			player_sprite.animation = player_data.animation
+			
+			
 	
 remotesync func add_player_to_world(player_data):	
 	var id = get_tree().get_rpc_sender_id()
@@ -153,9 +155,10 @@ remotesync func add_player_to_world(player_data):
 	
 	if players_scene == null:
 		return	
-		
+	
+	print("add_player_to_world: ",id, " | current", players.keys())
+	
 	if !players_scene.has_node(str(id)):
-		#if !is_network_master():
 		players[id]	= player_data
 		
 		var player_scene = player_scene_preload.instance()

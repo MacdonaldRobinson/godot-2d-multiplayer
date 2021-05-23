@@ -1,10 +1,11 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=37 format=2]
 
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_idle_anim_strip_4.png" type="Texture" id=1]
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_jump_up_anim_strip_3.png" type="Texture" id=2]
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_jump_down_anim_strip_3.png" type="Texture" id=3]
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_run_anim_strip_6.png" type="Texture" id=4]
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_death_anim_strip_8.png" type="Texture" id=5]
+[ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_hit_anim_strip_3.png" type="Texture" id=6]
 
 [sub_resource type="GDScript" id=28]
 script/source = "extends Node2D
@@ -17,10 +18,11 @@ onready var player_collider:CollisionShape2D = $CollisionShape2D;
 var player_velocity = Vector2(0, 0);
 var fireball_scene = preload(\"res://components/players/player1/Fireball.tscn\")
 
-var fireballs = []
+export var default_animation = \"idle\"
+var fireball_hit = false
 
 func _ready():	
-	player_animations.play(\"idle\")	
+	player_animations.play(default_animation)	
 	
 func _physics_process(delta):	
 	if !is_network_master():		
@@ -36,16 +38,16 @@ func _physics_process(delta):
 		
 	if Input.is_action_pressed(\"ui_left\"):		
 		player_animations.flip_h = true
-		player_velocity.x -= 5		
+		player_velocity.x -= 3		
 		player_animations.play(\"run\")
 	elif Input.is_action_pressed(\"ui_right\"):		
 		player_animations.flip_h = false
-		player_velocity.x += 5
+		player_velocity.x += 3
 		player_animations.play(\"run\")
 	else:
 		player_velocity.x = lerp(player_velocity.x, 0, 0.1)
 		if player.is_on_floor():
-			player_animations.play(\"idle\")
+			player_animations.play(default_animation)
 	
 	if player.is_on_floor() and Input.is_action_pressed(\"ui_up\"):		
 		player_velocity.y -= 250
@@ -54,6 +56,7 @@ func _physics_process(delta):
 		player_velocity.y += 50
 		player_animations.play(\"fall\")
 		
+	
 	if player.is_on_wall() or player.is_on_ceiling():
 		player_velocity.y = 0
 		if Input.is_action_pressed(\"ui_up\"):
@@ -75,20 +78,15 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed(\"fire\"):						
 		rpc(\"add_fireball_to_world\", player.global_position.x, player.global_position.y, player_animations.flip_h)
 		
-func death_animation_finished(body):
-	#print(\"death_animation_finished\", body.name)
-	rpc(\"remove_player_from_world\", int(body.name))	
-	body.queue_free()
 
-func fireball_body_entered(body):
-	#print(\"fireball_body_entered\", body)
+func fireball_body_entered(body):	
 	if body != self:
 		if body.is_in_group(\"player\"):
 			for child in body.get_children():
-				if child is AnimatedSprite:				
-					child.play(\"death\")
-					if !child.is_connected(\"animation_finished\", self, \"death_animation_finished\"):
-						child.connect(\"animation_finished\", self, \"death_animation_finished\", [body])
+				if child is AnimatedSprite:
+					var id = int(child.get_parent().name)
+					body.default_animation = \"hit\"
+					body.fireball_hit = true					
 
 remotesync func add_fireball_to_world(position_x, position_y, flip_h):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -103,12 +101,20 @@ remotesync func add_fireball_to_world(position_x, position_y, flip_h):
 	fireball.position.x = position_x
 	fireball.position.y = position_y
 	fireball_animations.flip_h = flip_h
-	fireballs.push_front(fireball)
 	
 	fireball.add_to_group(\"fireball\")
 	GameState.add_to_player_group(player_id, fireball)	
 	
 	get_tree().root.add_child(fireball)	
+
+
+func _on_Animations_animation_finished():
+	if player_animations.animation == \"hit\":
+		if fireball_hit:			
+			default_animation = \"idle\"
+			fireball_hit = false
+			
+		
 "
 
 [sub_resource type="AtlasTexture" id=2]
@@ -170,6 +176,21 @@ region = Rect2( 96, 0, 16, 16 )
 flags = 4
 atlas = ExtResource( 5 )
 region = Rect2( 112, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=29]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=30]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=31]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 32, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=6]
 flags = 4
@@ -239,8 +260,13 @@ animations = [ {
 "speed": 10.0
 }, {
 "frames": [ SubResource( 20 ), SubResource( 21 ), SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ) ],
-"loop": true,
+"loop": false,
 "name": "death",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 29 ), SubResource( 30 ), SubResource( 31 ) ],
+"loop": false,
+"name": "hit",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ],
@@ -281,8 +307,8 @@ __meta__ = {
 
 [node name="Animations" type="AnimatedSprite" parent="."]
 frames = SubResource( 18 )
-animation = "death"
-frame = 5
+animation = "hit"
+frame = 2
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -290,3 +316,5 @@ position = Vector2( -0.353554, 0.30936 )
 shape = SubResource( 19 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[connection signal="animation_finished" from="Animations" to="." method="_on_Animations_animation_finished"]
