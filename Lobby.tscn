@@ -18,12 +18,45 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
-margin_left = 245.0
-margin_top = 127.0
-margin_right = 330.0
-margin_bottom = 197.0
+margin_left = 493.0
+margin_top = 279.0
+margin_right = 659.0
+margin_bottom = 369.0
 
-[node name="PlayerNameLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+margin_right = 166.0
+margin_bottom = 90.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2"]
+margin_right = 73.0
+margin_bottom = 90.0
+
+[node name="Players" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer"]
+margin_right = 73.0
+margin_bottom = 14.0
+text = "Players List"
+
+[node name="PlayersConnectedList" type="ItemList" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer"]
+margin_top = 18.0
+margin_right = 73.0
+margin_bottom = 81.0
+items = [ "Player 1", null, false, "Player 2", null, false, "Player 3", null, false ]
+auto_height = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2"]
+margin_left = 77.0
+margin_right = 77.0
+margin_bottom = 90.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2"]
+margin_left = 81.0
+margin_right = 166.0
+margin_bottom = 90.0
+
+[node name="PlayerNameLabel" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
 margin_right = 85.0
 margin_bottom = 14.0
 text = "Player Name"
@@ -31,27 +64,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PlayerNameTextBox" type="LineEdit" parent="CenterContainer/VBoxContainer"]
+[node name="PlayerNameTextBox" type="LineEdit" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
 margin_top = 18.0
 margin_right = 85.0
 margin_bottom = 42.0
 
-[node name="PlayersConnectedList" type="ItemList" parent="CenterContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
 margin_top = 46.0
 margin_right = 85.0
-margin_bottom = 46.0
-items = [ "Player 1", null, false, "Player 2", null, false, "Player 3", null, false ]
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
-margin_top = 50.0
-margin_right = 85.0
-margin_bottom = 70.0
+margin_bottom = 66.0
 size_flags_vertical = 0
 
-[node name="Host" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+[node name="Host" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer"]
 margin_right = 42.0
 margin_bottom = 20.0
 text = "Host"
@@ -59,13 +83,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer"]
 margin_left = 46.0
 margin_right = 46.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="Join" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer"]
+[node name="Join" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer"]
 margin_left = 50.0
 margin_right = 85.0
 margin_bottom = 20.0
@@ -74,5 +98,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/Host" to="." method="_on_Host_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer/Join" to="." method="_on_Join_pressed"]
+[node name="StartGameButton" type="Button" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+margin_top = 70.0
+margin_right = 85.0
+margin_bottom = 90.0
+text = "Start Game"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Host" to="." method="_on_Host_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Join" to="." method="_on_Join_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/StartGameButton" to="." method="_on_StartGameButton_pressed"]

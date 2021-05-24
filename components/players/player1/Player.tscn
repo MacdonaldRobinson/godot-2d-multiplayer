@@ -7,13 +7,14 @@
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_death_anim_strip_8.png" type="Texture" id=5]
 [ext_resource path="res://components/players/player1/platform_metroidvania asset pack v1.01/herochar sprites(new)/herochar_hit_anim_strip_3.png" type="Texture" id=6]
 
-[sub_resource type="GDScript" id=28]
+[sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
 
 onready var player:KinematicBody2D = $\".\";
 onready var player_animations = $Animations;
 onready var player_name_label = $Name
 onready var player_collider:CollisionShape2D = $CollisionShape2D;
+onready var health_bar = $HealthBar
 
 var player_velocity = Vector2(0, 0);
 var fireball_scene = preload(\"res://components/players/player1/Fireball.tscn\")
@@ -38,11 +39,11 @@ func _physics_process(delta):
 		
 	if Input.is_action_pressed(\"ui_left\"):		
 		player_animations.flip_h = true
-		player_velocity.x -= 3		
+		player_velocity.x -= 5		
 		player_animations.play(\"run\")
 	elif Input.is_action_pressed(\"ui_right\"):		
 		player_animations.flip_h = false
-		player_velocity.x += 3
+		player_velocity.x += 5
 		player_animations.play(\"run\")
 	else:
 		player_velocity.x = lerp(player_velocity.x, 0, 0.1)
@@ -50,7 +51,7 @@ func _physics_process(delta):
 			player_animations.play(default_animation)
 	
 	if player.is_on_floor() and Input.is_action_pressed(\"ui_up\"):		
-		player_velocity.y -= 250
+		player_velocity.y -= 300
 		player_animations.play(\"jump\")
 	elif !player.is_on_floor() and Input.is_action_pressed(\"ui_down\"):
 		player_velocity.y += 50
@@ -60,10 +61,10 @@ func _physics_process(delta):
 	if player.is_on_wall() or player.is_on_ceiling():
 		player_velocity.y = 0
 		if Input.is_action_pressed(\"ui_up\"):
-			player_velocity.y -= 250
+			player_velocity.y -= 300
 			player_animations.play(\"jump\")
 		elif Input.is_action_pressed(\"ui_down\"):
-			player_velocity.y += 250
+			player_velocity.y += 300
 			player_animations.play(\"jump\")
 			
 	player_velocity = player.move_and_slide(player_velocity, Vector2.UP);	
@@ -71,7 +72,7 @@ func _physics_process(delta):
 	#if player.position != GameState.self_data.position:		
 	GameState.self_data.position = player.position
 	GameState.self_data.flip_h = player_animations.flip_h;
-	GameState.self_data.animation = player_animations.animation
+	GameState.self_data.animation = player_animations.animation	
 	
 	#rpc(\"update_player_data\", GameState.self_data)
 
@@ -84,9 +85,17 @@ func fireball_body_entered(body):
 		if body.is_in_group(\"player\"):
 			for child in body.get_children():
 				if child is AnimatedSprite:
-					var id = int(child.get_parent().name)
-					body.default_animation = \"hit\"
-					body.fireball_hit = true					
+					var id = int(body.name)
+					var current_player_data = GameState.players[id];
+					
+					body.fireball_hit = true	
+					current_player_data.health -=10
+					
+					if current_player_data.health <= 0:
+						body.default_animation = \"death\"						
+					else:
+						body.default_animation = \"hit\"
+					
 
 remotesync func add_fireball_to_world(position_x, position_y, flip_h):
 	var player_id = get_tree().get_rpc_sender_id()
@@ -109,12 +118,15 @@ remotesync func add_fireball_to_world(position_x, position_y, flip_h):
 
 
 func _on_Animations_animation_finished():
-	if player_animations.animation == \"hit\":
-		if fireball_hit:			
+	if fireball_hit:
+		if player_animations.animation == \"hit\":		
+			default_animation = \"idle\"
+			fireball_hit = false			
+		elif player_animations.animation == \"death\":
 			default_animation = \"idle\"
 			fireball_hit = false
-			
-		
+			print(\"death animation finished\")
+			GameState.self_data.health=100
 "
 
 [sub_resource type="AtlasTexture" id=2]
@@ -137,167 +149,178 @@ flags = 4
 atlas = ExtResource( 1 )
 region = Rect2( 48, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=20]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 0, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=21]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 16, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=22]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 32, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=23]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 48, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=24]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 64, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=25]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 80, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=26]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 96, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=27]
-flags = 4
-atlas = ExtResource( 5 )
-region = Rect2( 112, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=29]
-flags = 4
-atlas = ExtResource( 6 )
-region = Rect2( 0, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=30]
-flags = 4
-atlas = ExtResource( 6 )
-region = Rect2( 16, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=31]
-flags = 4
-atlas = ExtResource( 6 )
-region = Rect2( 32, 0, 16, 16 )
-
 [sub_resource type="AtlasTexture" id=6]
 flags = 4
-atlas = ExtResource( 3 )
+atlas = ExtResource( 5 )
 region = Rect2( 0, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=7]
 flags = 4
-atlas = ExtResource( 3 )
+atlas = ExtResource( 5 )
 region = Rect2( 16, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=8]
 flags = 4
-atlas = ExtResource( 3 )
+atlas = ExtResource( 5 )
 region = Rect2( 32, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=9]
 flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 48, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=10]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 64, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=11]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 80, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=12]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 96, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=13]
+flags = 4
+atlas = ExtResource( 5 )
+region = Rect2( 112, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=14]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=15]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=16]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 32, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=17]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=18]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=19]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 32, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=20]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=21]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=22]
+flags = 4
+atlas = ExtResource( 2 )
+region = Rect2( 32, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=23]
+flags = 4
 atlas = ExtResource( 4 )
 region = Rect2( 0, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=10]
+[sub_resource type="AtlasTexture" id=24]
 flags = 4
 atlas = ExtResource( 4 )
 region = Rect2( 16, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=11]
+[sub_resource type="AtlasTexture" id=25]
 flags = 4
 atlas = ExtResource( 4 )
 region = Rect2( 32, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=12]
+[sub_resource type="AtlasTexture" id=26]
 flags = 4
 atlas = ExtResource( 4 )
 region = Rect2( 48, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=13]
+[sub_resource type="AtlasTexture" id=27]
 flags = 4
 atlas = ExtResource( 4 )
 region = Rect2( 64, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=14]
+[sub_resource type="AtlasTexture" id=28]
 flags = 4
 atlas = ExtResource( 4 )
 region = Rect2( 80, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=15]
-flags = 4
-atlas = ExtResource( 2 )
-region = Rect2( 0, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=16]
-flags = 4
-atlas = ExtResource( 2 )
-region = Rect2( 16, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=17]
-flags = 4
-atlas = ExtResource( 2 )
-region = Rect2( 32, 0, 16, 16 )
-
-[sub_resource type="SpriteFrames" id=18]
+[sub_resource type="SpriteFrames" id=29]
 animations = [ {
 "frames": [ SubResource( 2 ), SubResource( 3 ), SubResource( 4 ), SubResource( 5 ) ],
 "loop": true,
 "name": "idle",
 "speed": 10.0
 }, {
-"frames": [ SubResource( 20 ), SubResource( 21 ), SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ) ],
+"frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ), SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
 "loop": false,
 "name": "death",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 29 ), SubResource( 30 ), SubResource( 31 ) ],
-"loop": false,
-"name": "hit",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ],
+"frames": [ SubResource( 14 ), SubResource( 15 ), SubResource( 16 ) ],
 "loop": true,
 "name": "fall",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ) ],
-"loop": true,
-"name": "run",
+"frames": [ SubResource( 17 ), SubResource( 18 ), SubResource( 19 ) ],
+"loop": false,
+"name": "hit",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ],
+"frames": [ SubResource( 20 ), SubResource( 21 ), SubResource( 22 ) ],
 "loop": true,
 "name": "jump",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ), SubResource( 28 ) ],
+"loop": true,
+"name": "run",
+"speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=19]
+[sub_resource type="RectangleShape2D" id=30]
 extents = Vector2( 6.43067, 7.65998 )
 
 [node name="Player" type="KinematicBody2D" groups=[
 "player",
 ]]
-script = SubResource( 28 )
+script = SubResource( 1 )
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+margin_left = -13.5
+margin_top = -14.625
+margin_right = 42.5
+margin_bottom = -0.625
+rect_scale = Vector2( 0.5, 0.5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Name" type="Label" parent="."]
-margin_left = -32.0115
-margin_top = -21.9489
-margin_right = 30.9885
-margin_bottom = -7.94888
+margin_left = -14.375
+margin_top = -21.75
+margin_right = 42.625
+margin_bottom = -7.75
+rect_scale = Vector2( 0.5, 0.5 )
 text = "Name"
 align = 1
 valign = 1
@@ -306,14 +329,14 @@ __meta__ = {
 }
 
 [node name="Animations" type="AnimatedSprite" parent="."]
-frames = SubResource( 18 )
+frames = SubResource( 29 )
 animation = "hit"
 frame = 2
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -0.353554, 0.30936 )
-shape = SubResource( 19 )
+shape = SubResource( 30 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 

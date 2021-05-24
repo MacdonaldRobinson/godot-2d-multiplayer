@@ -1,0 +1,16 @@
+[gd_scene format=2]
+
+[node name="Stats" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlayersScore" type="ItemList" parent="."]
+margin_right = 121.0
+margin_bottom = 40.0
+items = [ "Player 1", null, false, "Player 2", null, false ]
+__meta__ = {
+"_edit_use_anchors_": false
+}

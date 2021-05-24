@@ -35,8 +35,6 @@ func create_server(player_name):
 		
 	rpc("add_player_to_world", self_data);
 	
-	start_game()
-	
 	print("server created: ", PORT, " | Max clients allowed: ", MAX_CLIENTS)
 
 func server_disconnected():
@@ -61,7 +59,6 @@ func start_game():
 
 func connected_to_server():	
 	rpc("add_player_to_world", self_data);
-	start_game()
 	
 	print("connected_to_server")	
 	
@@ -139,10 +136,12 @@ remotesync func update_player_data(player_data):
 		
 		if player_scene != null:
 			var player_sprite = player_scene.get_node("Animations");
+			var health_bar = player_scene.get_node("HealthBar") as ProgressBar;
 			
 			player_scene.position = player_data.position
 			player_sprite.flip_h = player_data.flip_h
 			player_sprite.animation = player_data.animation
+			health_bar.value = player_data.health
 			
 			
 	
@@ -181,6 +180,6 @@ func handle_fireballs():
 		var fireball_animations = fireball.get_node("AnimatedSprite");
 		
 		if fireball_animations.flip_h:		
-			fireball.global_position.x -= 10
+			fireball.global_position.x -= 20
 		else:
-			fireball.global_position.x += 10
+			fireball.global_position.x += 20

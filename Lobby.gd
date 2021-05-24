@@ -1,9 +1,9 @@
 extends Control
 
-onready var player_name_textbox = $CenterContainer/VBoxContainer/PlayerNameTextBox
-onready var players_connected_list = $CenterContainer/VBoxContainer/PlayersConnectedList
-onready var join_button = $CenterContainer/VBoxContainer/HBoxContainer/Join
-onready var host_button = $CenterContainer/VBoxContainer/HBoxContainer/Host
+onready var player_name_textbox = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/PlayerNameTextBox
+onready var players_connected_list = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer/PlayersConnectedList
+onready var join_button = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Join
+onready var host_button = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Host
 
 func _process(delta):	
 	players_connected_list.clear();
@@ -27,3 +27,6 @@ func disable_buttons():
 func enable_buttons():
 	join_button.disabled = true
 	host_button.disabled = true	
+
+func _on_StartGameButton_pressed():
+	GameState.start_game()

@@ -489,8 +489,11 @@ animations = [ {
 } ]
 
 [node name="World" type="Node2D"]
+scale = Vector2( 2, 2 )
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+scale = Vector2( 2, 2 )
+transform = Transform2D( 2, 0, 0, 2, 0, 0 )
 
 [node name="ParallaxLayer1" type="ParallaxLayer" parent="ParallaxBackground"]
 
@@ -543,9 +546,8 @@ current = true
 position = Vector2( 538.644, 79.4118 )
 frames = SubResource( 34 )
 animation = "Stay"
-frame = 4
+frame = 0
 
 [node name="PurplePortal" parent="AnimatedObjects" instance=ExtResource( 16 )]
 position = Vector2( 45.7587, 80.5959 )
 frames = SubResource( 59 )
-frame = 0
