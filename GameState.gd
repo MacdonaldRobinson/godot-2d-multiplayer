@@ -1,9 +1,5 @@
 extends Node
 
-const SERVER_IP = "127.0.0.1"
-const PORT = 6969
-const MAX_CLIENTS = 5
-
 var network = NetworkedMultiplayerENet.new()
 
 sync var players:Dictionary = {}
@@ -27,27 +23,27 @@ func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
 		get_tree().quit()
 
-func create_server(player_name):
+func create_server(port_number, max_clients, player_name):
 	self_data.name = player_name;
 		
-	network.create_server(PORT, MAX_CLIENTS);		
+	network.create_server(int(port_number), int(max_clients));		
 	get_tree().network_peer = network
 		
 	rpc("add_player_to_world", self_data);
 	
-	print("server created: ", PORT, " | Max clients allowed: ", MAX_CLIENTS)
+	print("server created: ", port_number, " | Max clients allowed: ", max_clients)
 
 func server_disconnected():
 	print("server_disconnected")	
 
 	
-func join_server(player_name):
+func join_server(server_address, port_number, player_name):
 	self_data.name = player_name;
 	
-	network.create_client(SERVER_IP, PORT);			
+	network.create_client(server_address, int(port_number));			
 	get_tree().network_peer = network
 	
-	print("SERVER_IP: ", SERVER_IP, " | PORT: ", PORT, " | ", self_data)
+	print("SERVER_IP: ", server_address, " | PORT: ", port_number, " | ", self_data)
 	
 func connection_failed():
 	print("connection_failed")	
