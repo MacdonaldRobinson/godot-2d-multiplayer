@@ -8,6 +8,10 @@
 
 config_version=4
 
+[android]
+
+modules=false
+
 [application]
 
 config/name="2d-multiplayer"
@@ -23,6 +27,10 @@ GameState="*res://GameState.gd"
 window/size/width=1152
 window/size/height=648
 window/stretch/mode="viewport"
+
+[global]
+
+export=true
 
 [input]
 

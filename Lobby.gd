@@ -1,6 +1,6 @@
 extends Control
 
-onready var player_name_field = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/PlayerNameField
+onready var player_name_field = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/VBoxContainer/PlayerNameField
 onready var players_connected_list = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer/PlayersConnectedList
 onready var join_button = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Join
 onready var host_button = $CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer/Host

@@ -1,9 +1,9 @@
 [gd_resource type="Theme" load_steps=3 format=2]
 
-[ext_resource path="res://assets/fonts/kenney_fontpackage/Fonts/Kenney Pixel.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://fonts/Godot-Fontpack/fonts/cmu-typewriter/Typewriter/cmuntt.ttf" type="DynamicFontData" id=1]
 
 [sub_resource type="DynamicFont" id=1]
-size = 50
+size = 25
 font_data = ExtResource( 1 )
 
 [resource]

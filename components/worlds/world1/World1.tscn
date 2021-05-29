@@ -541,14 +541,15 @@ anchor_mode = 0
 current = true
 
 [node name="AnimatedObjects" type="Node2D" parent="."]
+visible = false
 
 [node name="GreenPortal" parent="AnimatedObjects" instance=ExtResource( 15 )]
 position = Vector2( 538.644, 79.4118 )
 frames = SubResource( 34 )
 animation = "Stay"
-frame = 1
+frame = 3
 
 [node name="PurplePortal" parent="AnimatedObjects" instance=ExtResource( 16 )]
 position = Vector2( 45.7587, 80.5959 )
 frames = SubResource( 59 )
-frame = 5
+frame = 7
