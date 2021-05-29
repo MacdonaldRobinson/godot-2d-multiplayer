@@ -158,6 +158,7 @@ margin_bottom = 254.0
 text = "Start Game"
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2"]
+margin_left = 510.0
 margin_right = 510.0
 margin_bottom = 254.0
 
