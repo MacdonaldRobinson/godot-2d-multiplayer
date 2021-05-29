@@ -1,7 +1,5 @@
 extends Node
 
-var network = NetworkedMultiplayerENet.new()
-
 sync var players:Dictionary = {}
 
 var self_data = {name="", position=Vector2(0, 0), flip_h=false, animation="idle", health=100, score=0}
@@ -25,7 +23,8 @@ func _input(event):
 
 func create_server(port_number, max_clients, player_name):
 	self_data.name = player_name;
-		
+
+	var network = NetworkedMultiplayerENet.new()
 	network.create_server(int(port_number), int(max_clients));		
 	get_tree().network_peer = network
 		
@@ -40,6 +39,7 @@ func server_disconnected():
 func join_server(server_address, port_number, player_name):
 	self_data.name = player_name;
 	
+	var network = NetworkedMultiplayerENet.new()
 	network.create_client(server_address, int(port_number));			
 	get_tree().network_peer = network
 	
