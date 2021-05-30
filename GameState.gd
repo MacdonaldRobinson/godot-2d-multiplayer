@@ -84,7 +84,6 @@ remotesync func _start_game():
 	get_tree().current_scene = world	
 	
 	if get_tree().is_network_server():
-		lobby_game_time = lobby.game_time_field.text
 		time_left = lobby_game_time
 		
 func connected_to_server():	
