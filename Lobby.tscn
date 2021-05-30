@@ -55,6 +55,7 @@ margin_bottom = 80.0
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer2"]
 margin_right = 166.0
 margin_bottom = 80.0
+size_flags_horizontal = 3
 
 [node name="ServerLabel" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer2/VBoxContainer"]
 margin_right = 166.0
@@ -104,23 +105,44 @@ margin_top = 84.0
 margin_right = 506.0
 margin_bottom = 84.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
 margin_top = 88.0
 margin_right = 506.0
 margin_bottom = 168.0
 
-[node name="PlayerNameLabel" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/VBoxContainer"]
-margin_right = 506.0
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer3"]
+margin_right = 336.0
+margin_bottom = 80.0
+size_flags_horizontal = 3
+
+[node name="PlayerNameLabel" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer3/VBoxContainer"]
+margin_right = 336.0
 margin_bottom = 33.0
 text = "Player Name"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PlayerNameField" type="LineEdit" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/VBoxContainer"]
+[node name="PlayerNameField" type="LineEdit" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer3/VBoxContainer"]
 margin_top = 37.0
+margin_right = 336.0
+margin_bottom = 80.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer3"]
+margin_left = 340.0
 margin_right = 506.0
 margin_bottom = 80.0
+
+[node name="GameTimeLabel" type="Label" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer3/VBoxContainer2"]
+margin_right = 166.0
+margin_bottom = 33.0
+text = "Game Time"
+
+[node name="GameTimeField" type="LineEdit" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2/HBoxContainer3/VBoxContainer2"]
+margin_top = 37.0
+margin_right = 166.0
+margin_bottom = 80.0
+text = "60"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2/VBoxContainer2"]
 margin_top = 172.0
@@ -155,7 +177,7 @@ __meta__ = {
 margin_top = 215.0
 margin_right = 506.0
 margin_bottom = 254.0
-text = "Start Game"
+text = "Start / Resume Game"
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer/HBoxContainer2"]
 margin_left = 510.0

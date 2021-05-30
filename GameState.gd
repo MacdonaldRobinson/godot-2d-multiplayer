@@ -2,6 +2,7 @@ extends Node
 
 sync var players:Dictionary = {}
 sync var world_data_sync = { }
+var lobby_game_time = 60
 sync var time_left = 60
 
 var self_data = {name="", position=Vector2(0, 0), flip_h=false, animation="idle", health=100, score=0}
@@ -34,7 +35,6 @@ func create_server(port_number, max_clients, player_name):
 	network.create_server(int(port_number), int(max_clients));		
 	get_tree().network_peer = network
 	create_world()
-	update_time_left(60)
 	
 	rpc("add_player_to_world", self_data);
 	
@@ -45,7 +45,11 @@ func show_lobby():
 	get_tree().root.remove_child(get_tree().current_scene)
 	get_tree().root.add_child(lobby_instance)	
 	get_tree().current_scene = lobby_instance
+	lobby_instance.player_name_field.text = GameState.self_data.name
 	
+	if get_tree().network_peer == null:
+		lobby_instance.join_button.visibile = true
+		lobby_instance.host_button.visibile = true
 
 func server_disconnected():
 	print("server_disconnected")
@@ -71,12 +75,18 @@ func create_world():
 	GameState.self_data.position = Vector2(0, 0)	
 	
 	
-func start_game():	
+remotesync func start_game():
+	rpc("_start_game")
+	
+remotesync func _start_game():	
 	get_tree().root.remove_child(get_tree().current_scene)
 	get_tree().root.add_child(world)	
-	get_tree().current_scene = world
+	get_tree().current_scene = world	
 	
-
+	if get_tree().is_network_server():
+		lobby_game_time = lobby.game_time_field.text
+		time_left = lobby_game_time
+		
 func connected_to_server():	
 	create_world()
 	GameState.players={}
@@ -100,11 +110,14 @@ func _process(delta):
 	var players_scene = world.get_node("Players");
 	
 	if players_scene == null:
-		return				
+		return		
 		
 	for player in players:		
-		rpc("add_player_to_world", self_data);
+		rpc("add_player_to_world", self_data)
 		rpc("update_player_data", self_data)
+		
+	if get_tree().is_network_server():
+		rpc("update_time_left", time_left)
 
 	handle_fireballs()
 	
@@ -149,18 +162,31 @@ func sorted_player_data_custom_comparison(a, b):
 	else:
 		return false
 
-func restart_game():	
-	for player_id in players:
-		var player_data = players[player_id]
-		player_data.position = Vector2(0,0)
-		#player_data.score = 0
-		player_data.health = 100
-		print("updating player", player_id, player_data)		
-		rpc("update_player_data", player_data)
-
 remotesync func update_time_left(time_left):
 	GameState.time_left = time_left	
-	rset("time_left", time_left)
+	
+remotesync func reset_players():
+	print("reset_players", GameState.players)
+	
+	if get_tree().is_network_server():
+		GameState.time_left = lobby_game_time
+	
+	for player_id in GameState.players:
+		rpc("reset_player", player_id);
+	
+remotesync func reset_player(player_id):
+	print("reset_player", player_id)
+
+	var player_data = GameState.players[player_id]
+
+	player_data.position = Vector2(0, 0)
+	player_data.health = 100
+	player_data.score = 0
+	
+	var player: KinematicBody2D = GameState.world.get_node("Players").get_node(str(player_id))
+	player.position = player_data.position	
+	player.set_physics_process(true)
+	player.set_process(true)
 
 remotesync func remove_player_from_world(id):
 			
@@ -191,7 +217,6 @@ remotesync func update_player_data(player_data):
 		return		
 	
 	if players_scene.has_node(str(id)):
-		players[id]	= player_data
 		
 		var player_scene:KinematicBody2D = players_scene.get_node(str(id))
 		
@@ -211,8 +236,6 @@ remotesync func update_player_data(player_data):
 				player_collider.disabled = true
 			else:
 				player_collider.disabled = false
-				player_scene.set_process(true)
-				player_scene.set_physics_process(true)
 
 	
 remotesync func add_player_to_world(player_data):

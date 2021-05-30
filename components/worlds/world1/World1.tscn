@@ -558,12 +558,12 @@ visible = false
 position = Vector2( 538.644, 79.4118 )
 frames = SubResource( 34 )
 animation = "Stay"
-frame = 6
+frame = 7
 
 [node name="PurplePortal" parent="AnimatedObjects" instance=ExtResource( 16 )]
 position = Vector2( 45.7587, 80.5959 )
 frames = SubResource( 59 )
-frame = 1
+frame = 7
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -666,25 +666,25 @@ margin_right = 1152.0
 margin_bottom = 76.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2"]
-margin_left = 484.0
-margin_right = 668.0
+margin_left = 497.0
+margin_right = 655.0
 margin_bottom = 39.0
 
-[node name="Restart" type="Button" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer"]
-margin_right = 103.0
+[node name="Reset" type="Button" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer"]
+margin_right = 77.0
 margin_bottom = 39.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
-text = "Restart"
+text = "Reset"
 
 [node name="Lobby" type="Button" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer"]
-margin_left = 107.0
-margin_right = 184.0
+margin_left = 81.0
+margin_right = 158.0
 margin_bottom = 39.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Lobby"
 
 [connection signal="timeout" from="CanvasLayer/Control/Timer" to="." method="_on_Timer_timeout"]
-[connection signal="pressed" from="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer/Restart" to="." method="_on_Restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer/Reset" to="." method="_on_Reset_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer/Lobby" to="." method="_on_Lobby_pressed"]
