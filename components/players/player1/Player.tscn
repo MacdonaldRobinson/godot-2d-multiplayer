@@ -80,19 +80,22 @@ func _physics_process(delta):
 		rpc(\"add_fireball_to_world\", player.global_position.x, player.global_position.y, player_animations.flip_h)
 		
 
-func fireball_body_entered(body):	
-	if body != self:
-		if body.is_in_group(\"player\"):
+func fireball_body_entered(body, shooter_player_id):	
+	if body != self and body is KinematicBody2D:
+		body = body as KinematicBody2D
+		if body.is_in_group(\"player\") and body.visible:
 			for child in body.get_children():
 				if child is AnimatedSprite:
 					var id = int(body.name)
 					var current_player_data = GameState.players[id];
+					var shooter_player_data = GameState.players[shooter_player_id];
 					
 					body.fireball_hit = true	
 					current_player_data.health -=10
+					shooter_player_data.score +=1
 					
 					if current_player_data.health <= 0:
-						body.default_animation = \"death\"						
+						body.default_animation = \"death\"
 					else:
 						body.default_animation = \"hit\"
 					
@@ -105,7 +108,7 @@ remotesync func add_fireball_to_world(position_x, position_y, flip_h):
 	var fireball_animations = fireball.get_node(\"AnimatedSprite\");
 
 	if !fireball.is_connected(\"body_entered\", self, \"fireball_body_entered\"):
-		fireball.connect(\"body_entered\", self, \"fireball_body_entered\")
+		fireball.connect(\"body_entered\", self, \"fireball_body_entered\", [player_id])
 	
 	fireball.position.x = position_x
 	fireball.position.y = position_y
@@ -124,9 +127,13 @@ func _on_Animations_animation_finished():
 			fireball_hit = false			
 		elif player_animations.animation == \"death\":
 			default_animation = \"idle\"
-			fireball_hit = false
-			print(\"death animation finished\")
-			GameState.self_data.health=100
+			fireball_hit = false	
+			player.player_collider.disabled = true		
+
+
+func _on_VisibilityNotifier2D_screen_exited():
+	player.set_process(false)
+	player.set_physics_process(false)
 "
 
 [sub_resource type="AtlasTexture" id=2]
@@ -221,48 +228,48 @@ region = Rect2( 32, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=20]
 flags = 4
-atlas = ExtResource( 2 )
+atlas = ExtResource( 4 )
 region = Rect2( 0, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=21]
 flags = 4
-atlas = ExtResource( 2 )
+atlas = ExtResource( 4 )
 region = Rect2( 16, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=22]
 flags = 4
-atlas = ExtResource( 2 )
+atlas = ExtResource( 4 )
 region = Rect2( 32, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=23]
 flags = 4
 atlas = ExtResource( 4 )
-region = Rect2( 0, 0, 16, 16 )
+region = Rect2( 48, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=24]
 flags = 4
 atlas = ExtResource( 4 )
-region = Rect2( 16, 0, 16, 16 )
+region = Rect2( 64, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=25]
 flags = 4
 atlas = ExtResource( 4 )
-region = Rect2( 32, 0, 16, 16 )
+region = Rect2( 80, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=26]
 flags = 4
-atlas = ExtResource( 4 )
-region = Rect2( 48, 0, 16, 16 )
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=27]
 flags = 4
-atlas = ExtResource( 4 )
-region = Rect2( 64, 0, 16, 16 )
+atlas = ExtResource( 2 )
+region = Rect2( 16, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=28]
 flags = 4
-atlas = ExtResource( 4 )
-region = Rect2( 80, 0, 16, 16 )
+atlas = ExtResource( 2 )
+region = Rect2( 32, 0, 16, 16 )
 
 [sub_resource type="SpriteFrames" id=29]
 animations = [ {
@@ -286,14 +293,14 @@ animations = [ {
 "name": "hit",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 20 ), SubResource( 21 ), SubResource( 22 ) ],
-"loop": true,
-"name": "jump",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ), SubResource( 28 ) ],
+"frames": [ SubResource( 20 ), SubResource( 21 ), SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ) ],
 "loop": true,
 "name": "run",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 26 ), SubResource( 27 ), SubResource( 28 ) ],
+"loop": true,
+"name": "jump",
 "speed": 5.0
 } ]
 
@@ -340,4 +347,7 @@ shape = SubResource( 30 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
+
 [connection signal="animation_finished" from="Animations" to="." method="_on_Animations_animation_finished"]
+[connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"]

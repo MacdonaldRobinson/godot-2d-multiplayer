@@ -1,4 +1,4 @@
-[gd_scene load_steps=77 format=2]
+[gd_scene load_steps=84 format=2]
 
 [ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/1 Tiles/IndustrialTile_13.png" type="Texture" id=1]
 [ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/1 Tiles/IndustrialTile_04.png" type="Texture" id=2]
@@ -13,10 +13,12 @@
 [ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/2 Background/4.png" type="Texture" id=11]
 [ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/1 Tiles/IndustrialTile_15.png" type="Texture" id=12]
 [ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/1 Tiles/IndustrialTile_05.png" type="Texture" id=13]
+[ext_resource path="res://fonts/Godot-Fontpack/fonts/cmu-typewriter/Typewriter/cmuntt.ttf" type="DynamicFontData" id=14]
 [ext_resource path="res://components/worlds/world1/AnimatedSprites/GreenPortal.tscn" type="PackedScene" id=15]
 [ext_resource path="res://components/worlds/world1/AnimatedSprites/PurplePortal.tscn" type="PackedScene" id=16]
 [ext_resource path="res://components/worlds/world1/Purple Portal Sprite Sheet.png" type="Texture" id=17]
 [ext_resource path="res://components/worlds/world1/Green Portal Sprite Sheet.png" type="Texture" id=18]
+[ext_resource path="res://components/worlds/world1/World1.gd" type="Script" id=19]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -488,8 +490,27 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="DynamicFont" id=60]
+size = 25
+font_data = ExtResource( 14 )
+
+[sub_resource type="Theme" id=61]
+default_font = SubResource( 60 )
+
+[sub_resource type="StyleBoxFlat" id=64]
+bg_color = Color( 0, 0, 0, 0.792157 )
+
+[sub_resource type="DynamicFont" id=62]
+size = 50
+font_data = ExtResource( 14 )
+
+[sub_resource type="Theme" id=63]
+default_font = SubResource( 62 )
+PopupPanel/styles/panel = SubResource( 64 )
+
 [node name="World" type="Node2D"]
 scale = Vector2( 2, 2 )
+script = ExtResource( 19 )
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 scale = Vector2( 2, 2 )
@@ -551,4 +572,105 @@ animation = "Stay"
 [node name="PurplePortal" parent="AnimatedObjects" instance=ExtResource( 16 )]
 position = Vector2( 45.7587, 80.5959 )
 frames = SubResource( 59 )
-frame = 1
+frame = 6
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 61 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Timer" type="Timer" parent="CanvasLayer/Control"]
+autostart = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control"]
+margin_left = 13.8336
+margin_top = 592.232
+margin_right = 173.834
+margin_bottom = 632.232
+__meta__ = {
+"_edit_group_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer/Control/HBoxContainer"]
+margin_top = 3.0
+margin_right = 130.0
+margin_bottom = 36.0
+text = "Time Left:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TimeLeftField" type="Label" parent="CanvasLayer/Control/HBoxContainer"]
+margin_left = 134.0
+margin_top = 3.0
+margin_right = 160.0
+margin_bottom = 36.0
+text = "60"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -16.5
+margin_bottom = 16.5
+theme = SubResource( 63 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WinnerPopupPanel" type="PopupPanel" parent="CanvasLayer/Control/CenterContainer"]
+pause_mode = 2
+visible = true
+margin_left = 249.0
+margin_top = 4.0
+margin_right = 903.0
+margin_bottom = 68.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer"]
+margin_right = 654.0
+margin_bottom = 64.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WinnerLabel" type="Label" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer/HBoxContainer"]
+margin_right = 364.0
+margin_bottom = 64.0
+text = "The Winner Is:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WinnerNameField" type="Label" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer/HBoxContainer"]
+margin_left = 368.0
+margin_right = 654.0
+margin_bottom = 64.0
+text = "Player Name"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Restart" type="Button" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer"]
+margin_top = 68.0
+margin_right = 654.0
+margin_bottom = 138.0
+text = "Restart"
+
+[connection signal="timeout" from="CanvasLayer/Control/Timer" to="." method="_on_Timer_timeout"]
+[connection signal="pressed" from="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer/Restart" to="." method="_on_Restart_pressed"]

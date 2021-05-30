@@ -1,6 +1,7 @@
 extends Node
 
 sync var players:Dictionary = {}
+sync var world_data_sync = { time_left=20, has_game_ended=false }
 
 var self_data = {name="", position=Vector2(0, 0), flip_h=false, animation="idle", health=100, score=0}
 
@@ -72,22 +73,14 @@ func _process(delta):
 	
 	
 	if players_scene == null:
-		return	
-		
-#	for player_scene in players_scene.get_children():			
-#		var player_id = int(player_scene.name);		
-#		if !players.has(player_id):
-#			remove_player_from_world(player_id)
-			
-	#if get_tree().network_peer != null and get_tree().is_network_server():		
-		#rset("players", players)		
+		return				
 		
 	for player in players:		
 		rpc("add_player_to_world", self_data);
 		rpc("update_player_data", self_data)
 
 	handle_fireballs()
-
+	
 func get_nodes_in_player_group(player_id):
 	get_tree().get_nodes_in_group(get_player_group_name(player_id))	
 	
@@ -96,6 +89,17 @@ func get_player_group_name(player_id):
 	
 func add_to_player_group(player_id, node):
 	node.add_to_group(get_player_group_name(player_id))
+
+remotesync func reset_players():
+	for player_id in GameState.players:
+		var player_data = GameState.players[player_id]
+		player_data.score = 0
+		player_data.health = 100
+
+remotesync func update_world_sync(world_data):
+	print("update_world_sync", world_data)
+	GameState.world_data_sync = world_data	
+	rset("world_data_sync", GameState.world_data_sync)
 
 remotesync func remove_player_from_world(id):
 			

@@ -22,6 +22,10 @@ config/icon="res://icon.png"
 
 GameState="*res://GameState.gd"
 
+[debug]
+
+settings=false
+
 [display]
 
 window/size/width=1152
@@ -31,6 +35,7 @@ window/stretch/mode="viewport"
 [global]
 
 export=true
+debug=false
 
 [input]
 
