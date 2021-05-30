@@ -1,4 +1,4 @@
-[gd_scene load_steps=84 format=2]
+[gd_scene load_steps=82 format=2]
 
 [ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/1 Tiles/IndustrialTile_13.png" type="Texture" id=1]
 [ext_resource path="res://components/worlds/world1/craftpix-net-198222-free-industrial-zone-tileset-pixel-art/1 Tiles/IndustrialTile_04.png" type="Texture" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://components/worlds/world1/Purple Portal Sprite Sheet.png" type="Texture" id=17]
 [ext_resource path="res://components/worlds/world1/Green Portal Sprite Sheet.png" type="Texture" id=18]
 [ext_resource path="res://components/worlds/world1/World1.gd" type="Script" id=19]
+[ext_resource path="res://components/worlds/world1/PopupPanelStyle.tres" type="StyleBox" id=20]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -497,17 +498,6 @@ font_data = ExtResource( 14 )
 [sub_resource type="Theme" id=61]
 default_font = SubResource( 60 )
 
-[sub_resource type="StyleBoxFlat" id=64]
-bg_color = Color( 0, 0, 0, 0.792157 )
-
-[sub_resource type="DynamicFont" id=62]
-size = 50
-font_data = ExtResource( 14 )
-
-[sub_resource type="Theme" id=63]
-default_font = SubResource( 62 )
-PopupPanel/styles/panel = SubResource( 64 )
-
 [node name="World" type="Node2D"]
 scale = Vector2( 2, 2 )
 script = ExtResource( 19 )
@@ -568,11 +558,12 @@ visible = false
 position = Vector2( 538.644, 79.4118 )
 frames = SubResource( 34 )
 animation = "Stay"
+frame = 6
 
 [node name="PurplePortal" parent="AnimatedObjects" instance=ExtResource( 16 )]
 position = Vector2( 45.7587, 80.5959 )
 frames = SubResource( 59 )
-frame = 6
+frame = 1
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -616,61 +607,84 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control"]
+[node name="WinnerPopupPanel" type="PopupPanel" parent="CanvasLayer/Control"]
+pause_mode = 2
+visible = true
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-margin_top = -16.5
-margin_bottom = 16.5
-theme = SubResource( 63 )
+margin_top = -38.0
+margin_bottom = 38.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_styles/panel = ExtResource( 20 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="WinnerPopupPanel" type="PopupPanel" parent="CanvasLayer/Control/CenterContainer"]
-pause_mode = 2
-visible = true
-margin_left = 249.0
-margin_top = 4.0
-margin_right = 903.0
-margin_bottom = 68.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel"]
-margin_right = 40.0
-margin_bottom = 40.0
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/WinnerPopupPanel"]
+margin_right = 1152.0
+margin_bottom = 76.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer"]
-margin_right = 654.0
-margin_bottom = 64.0
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer"]
+margin_right = 1152.0
+margin_bottom = 33.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer"]
+margin_left = 411.0
+margin_right = 740.0
+margin_bottom = 33.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="WinnerLabel" type="Label" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer/HBoxContainer"]
-margin_right = 364.0
-margin_bottom = 64.0
+[node name="WinnerLabel" type="Label" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer/HBoxContainer"]
+margin_right = 182.0
+margin_bottom = 33.0
 text = "The Winner Is:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="WinnerNameField" type="Label" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer/HBoxContainer"]
-margin_left = 368.0
-margin_right = 654.0
-margin_bottom = 64.0
+[node name="WinnerNameField" type="Label" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer/HBoxContainer"]
+margin_left = 186.0
+margin_right = 329.0
+margin_bottom = 33.0
 text = "Player Name"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Restart" type="Button" parent="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer"]
-margin_top = 68.0
-margin_right = 654.0
-margin_bottom = 138.0
+[node name="CenterContainer2" type="CenterContainer" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer"]
+margin_top = 37.0
+margin_right = 1152.0
+margin_bottom = 76.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2"]
+margin_left = 484.0
+margin_right = 668.0
+margin_bottom = 39.0
+
+[node name="Restart" type="Button" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer"]
+margin_right = 103.0
+margin_bottom = 39.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 text = "Restart"
 
+[node name="Lobby" type="Button" parent="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer"]
+margin_left = 107.0
+margin_right = 184.0
+margin_bottom = 39.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Lobby"
+
 [connection signal="timeout" from="CanvasLayer/Control/Timer" to="." method="_on_Timer_timeout"]
-[connection signal="pressed" from="CanvasLayer/Control/CenterContainer/WinnerPopupPanel/VBoxContainer/Restart" to="." method="_on_Restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer/Restart" to="." method="_on_Restart_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/WinnerPopupPanel/VBoxContainer/CenterContainer2/HBoxContainer/Lobby" to="." method="_on_Lobby_pressed"]

@@ -17,12 +17,9 @@ func _process(delta):
 		
 func _on_Host_pressed():
 	GameState.create_server(port_number_field.text, max_clients_field.text, player_name_field.text)
-	
-	disable_buttons()
 
 func _on_Join_pressed():
 	GameState.join_server(server_address_field.text, port_number_field.text, player_name_field.text)
-	disable_buttons()
 
 func disable_buttons():
 	join_button.disabled = true
