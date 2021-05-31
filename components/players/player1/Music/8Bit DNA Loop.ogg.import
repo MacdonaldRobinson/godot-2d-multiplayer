@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/8Bit DNA Loop.ogg-166b4832eaa1533a631dcbc2165725c5.oggstr"
+
+[deps]
+
+source_file="res://components/players/player1/Music/8Bit DNA Loop.ogg"
+dest_files=[ "res://.import/8Bit DNA Loop.ogg-166b4832eaa1533a631dcbc2165725c5.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
