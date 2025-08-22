@@ -11,3 +11,5 @@ Instructions:
 - Arrow for movement
   - Up arrow for Jump
 - Tab for shooting
+
+<img width="1415" height="919" alt="image" src="https://github.com/user-attachments/assets/b705d9f5-bd10-42f0-bbdb-30efb61c7144" />
